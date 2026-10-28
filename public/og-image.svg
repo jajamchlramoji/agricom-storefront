@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f9f6f0"/>
+  <circle cx="920" cy="300" r="260" fill="#e8eee4"/>
+  <circle cx="920" cy="300" r="205" fill="#dce4d2"/>
+  <path d="M882 500c-5-120 36-246 139-333m-137 227c-95-40-124-104-111-165 77 4 131 60 111 165Zm56-94c38-100 105-119 153-103-14 79-73 123-153 103Z" fill="#496b42" stroke="#496b42" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="92" y="250" font-family="Georgia,serif" font-size="82" font-weight="700" fill="#0f3d2e">AgriCom</text>
+  <text x="96" y="320" font-family="Arial,sans-serif" font-size="28" letter-spacing="5" fill="#728156">GROW WITH CONFIDENCE</text>
+  <text x="96" y="405" font-family="Arial,sans-serif" font-size="26" fill="#58695a">Thoughtful crop care and farm essentials</text>
+  <rect x="96" y="460" width="258" height="5" rx="2" fill="#c9a24b"/>
+</svg>
