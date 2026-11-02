@@ -60,7 +60,7 @@ AgriCom/
         └── Storefront.tsx       # Header, navigation, product cards, pages, checkout and footer
 ```
 
-## Architecture in plain language
+## Architecture
 
 - **Routes and SEO:** `App.tsx` maps URLs such as `/shop`, `/product/root-rise`, `/cart` and `/checkout` to page components. It also updates the browser title, description, Open Graph tags and canonical URL when the route changes. The page content stays in `Storefront.tsx` so the initial project is easy to explore. As it grows, move each page into its own file under `src/pages/`.
 - **Product data:** `data/products.ts` defines the `Product` type once and holds the catalog. Components read product data from here instead of duplicating names or prices in page markup. A future CMS or API can replace this module while keeping the same type shape.
