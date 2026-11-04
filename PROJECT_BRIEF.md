@@ -51,3 +51,15 @@ The sketch also includes AI voice search as a possible later-stage feature.
 
 ## Domain
 Use a temporary address for now. The domain name will be decided later.
+
+## Architecture and operating decisions (planning update)
+- Keep the current React, TypeScript and Vite storefront, but separate it from backend APIs.
+- Use independently runnable services for catalog, orders, and fulfillment, behind an API gateway. Payments and automated notifications are later service boundaries.
+- Keep a separate owner/admin frontend. The owner reviews product drafts before publishing them to the storefront.
+- Launch as order requests: check supplier stock, price, and delivery availability before confirming with the customer. Suppliers are expected to ship most products; some orders may ship from AgriCom stock.
+- Customer and admin sign-in screens are included in the local test. The customer can see their own order requests; admin roles have different permissions. Supplier logins are not required for the first test.
+- The admin workspace needs incoming request handling, individual and batch status updates, fulfilment source assignment, and role permission settings.
+- Initial product count planning range: 25–500. Supplier stock-update method is undecided; the test flow uses a manual availability check.
+- Payment preference: UPI or COD, collected/confirmed only after the store confirms the order. No card processing in the first test.
+- Keep the first preview private and local. Do not use real customer information or enable live payment collection in the test environment.
+- Local service storage is for demonstration only. Production requires secured persistent storage, access controls, backups, and verified product, supplier, and shipping workflows.

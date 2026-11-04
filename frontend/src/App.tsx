@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { AccountPage, AboutPage, BottomNav, CartPage, CheckoutPage, ContactPage, FaqPage, Footer, Header, HomePage, ProductPage, ShippingPage, ShopPage, WhatsAppFab } from './components/Storefront';
+import { AccountPage, AboutPage, BottomNav, CartPage, CheckoutPage, ContactPage, FaqPage, Footer, Header, HomePage, LoginPage, ProductPage, ShippingPage, ShopPage, WhatsAppFab } from './components/Storefront';
 import { storeConfig } from './config/store';
 import type { Language } from './i18n';
-import { products } from './data/products';
+import { useCatalog } from './store/catalog';
+import { useAuth } from './store/auth';
 
 export default function App() {
   const [lang,setLang]=useState<Language>(storeConfig.defaultLanguage); const location=useLocation();
+  const products = useCatalog((state) => state.products);
+  const loadProducts = useCatalog((state) => state.loadProducts);
+  const restoreAuth = useAuth((state) => state.restore);
+  useEffect(() => { void loadProducts(); }, [loadProducts]);
+  useEffect(() => { void restoreAuth(); }, [restoreAuth]);
   useEffect(() => {
     const productId = location.pathname.startsWith('/product/') ? location.pathname.split('/')[2] : '';
     const product = products.find((item) => item.id === productId);
@@ -27,7 +33,7 @@ export default function App() {
     let canonical = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
     canonical.href = new URL(location.pathname, window.location.origin).toString();
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, products]);
   return <div className="app-shell"><Header lang={lang} setLang={setLang}/><Routes>
     <Route path="/" element={<HomePage lang={lang}/>}/>
     <Route path="/shop" element={<ShopPage lang={lang}/>}/>
@@ -35,6 +41,7 @@ export default function App() {
     <Route path="/cart" element={<CartPage lang={lang}/>}/>
     <Route path="/checkout" element={<CheckoutPage key={location.key}/>}/>
     <Route path="/account" element={<AccountPage/>}/>
+    <Route path="/login" element={<LoginPage/>}/>
     <Route path="/about" element={<AboutPage/>}/>
     <Route path="/contact" element={<ContactPage/>}/>
     <Route path="/shipping-policy" element={<ShippingPage/>}/>

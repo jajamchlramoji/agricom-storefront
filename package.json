@@ -4,9 +4,13 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "dev": "node scripts/dev.mjs",
+    "dev:storefront": "cd frontend && vite --host 127.0.0.1",
+    "dev:admin": "cd admin && vite --host 127.0.0.1",
+    "dev:backend": "node scripts/dev-backend.mjs",
+    "build": "cd frontend && tsc -b tsconfig.json && vite build && cd ../admin && tsc -p tsconfig.json && vite build",
+    "preview": "cd frontend && vite preview --host 127.0.0.1",
+    "preview:admin": "cd admin && vite preview --host 127.0.0.1 --port 4174"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",
