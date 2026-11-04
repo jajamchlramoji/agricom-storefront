@@ -1,91 +1,126 @@
-# AgriCom storefront
+# AgriCom
 
-AgriCom is a mobile-first storefront prototype for Indian farmers. It is built with React, TypeScript and Vite, and outputs a static site that can be hosted on Vercel, Netlify, Cloudflare Pages or GitHub Pages.
+AgriCom is a mobile-first storefront prototype for Indian farmers. This branch separates the customer storefront, the local admin preview, and backend services so the parts can be developed and deployed independently.
 
-## Run it locally
+## Run the local test setup
 
-1. Install Node.js 20 or newer.
-2. Open a terminal in this project folder.
-3. Install the packages:
+Requirements: Node.js 20 or newer and npm.
+
+1. Open a terminal in this project folder.
+2. Install the existing project dependencies:
 
    ```sh
    npm install
    ```
 
-4. Start the local development server:
+3. Start the frontends and backend services:
 
    ```sh
    npm run dev
    ```
 
-5. Open the local URL printed by Vite (usually `http://localhost:5173`).
+4. Open these local addresses:
 
-To make a production build, run `npm run build`. The finished static files are written to `dist/`. To preview that build locally, run `npm run preview`.
+   - Storefront: <http://127.0.0.1:5173>
+   - Admin preview: <http://127.0.0.1:5174>
+   - API health: <http://127.0.0.1:4000/api/health>
 
-## Before accepting real orders
+### Local demo sign-in accounts
 
-This repository is a frontend starter, not a complete commerce backend. The checkout creates an order request in the browser and can open a prefilled WhatsApp message. It does not securely store orders on a server, reserve inventory, authenticate an admin, or charge a card or UPI payment automatically. The UPI QR is a payment intent display; the customer must verify the payee and amount in their UPI app. Confirm orders and payments through the store's own process.
+| Role | Email | Password |
+|---|---|---|
+| Owner / admin | `admin@agricom.local` | `AgriComAdmin2026!` |
+| Operations | `ops@agricom.local` | `AgriComOps2026!` |
+| Catalog manager | `catalog@agricom.local` | `AgriComCatalog2026!` |
+| Customer / farmer | `farmer@agricom.local` | `AgriComFarmer2026!` |
 
-Before launch, update `src/config/store.ts` with the real WhatsApp number and UPI ID. Add the verified phone and email. Replace the sample product records and illustrations in `src/data/products.ts` with supplier-approved product information and real product photos. Confirm product registration, label claims, stock, crop suitability, prices, tax handling, delivery coverage, shipping charges, and business policies. The sample product names and specifications are placeholders; usage guidance intentionally directs customers to the approved product label rather than inventing dosage instructions.
+These are **demo-only credentials**. The Auth service hashes passwords in memory and keeps sign-in sessions in memory, so restarting the backend resets sessions. It does not yet have production account storage, password reset, or MFA. Do not reuse these passwords or expose the admin page publicly.
 
-## Project map
+Press `Ctrl+C` in the terminal to stop the local processes. You can also start pieces separately with `npm run dev:storefront`, `npm run dev:admin`, and `npm run dev:backend`.
 
-```text
-AgriCom/
-├── .gitignore                 # Ignores local dependencies and generated build files
-├── index.html                 # Browser document, global title and share metadata
-├── package.json               # Dependencies and dev/build/preview commands
-├── package-lock.json          # Exact dependency versions used by npm install
-├── vite.config.ts             # Vite + React build configuration
-├── tsconfig.json              # TypeScript project references
-├── tsconfig.app.json          # Strict TypeScript settings for the app
-├── tailwind.config.js         # Tailwind scan paths and AgriCom theme extensions
-├── postcss.config.js          # Runs Tailwind and Autoprefixer during CSS processing
-├── PROJECT_BRIEF.md           # Confirmed discovery brief
-├── ReadME.md                  # Setup, operating notes and this architecture map
-├── public/
-│   └── og-image.svg            # Storewide social-sharing image
-└── src/
-    ├── main.tsx               # React entry point; mounts the app and browser router
-    ├── App.tsx                 # Routes and shared page shell
-    ├── styles.css             # Design tokens, reusable component styles and responsive layout
-    ├── i18n.ts                 # English and Telugu interface strings and language type
-    ├── config/
-    │   └── store.ts            # Store contact, UPI, language and delivery settings
-    ├── data/
-    │   └── products.ts         # Product/category/cart/order TypeScript schemas and starter catalog
-    ├── store/
-    │   └── cart.ts             # Zustand cart actions persisted in this browser's localStorage
-    └── components/
-        └── Storefront.tsx       # Header, navigation, product cards, pages, checkout and footer
+## Local test behavior and limits
+
+- The API services bind to `127.0.0.1`, so they are intended for this computer only.
+- The local admin preview has demo sign-in and role checks, but no production-grade account security. Use dummy data only; do not deploy it or enter real customer information.
+- Products begin from `backend/data/catalog.seed.json`. Admin changes are saved to the ignored local file `backend/data/catalog.local.json`; local orders and fulfilment records are saved to ignored JSON files under `backend/data/`.
+- The backend recalculates order totals from the catalog. The customer submits an order request; this prototype does not capture UPI, card, or COD payments.
+- The frontend keeps a convenience copy of the request in browser storage. The API’s local order record is the shared source during this local run.
+- Sample products and star ratings are illustrative. Do not treat them as verified listings or real reviews.
+
+To reset local admin edits and demo orders, stop the app and remove `backend/data/catalog.local.json`, `backend/data/orders.json`, and `backend/data/fulfillment.json`. The sample seed file is not changed.
+
+## Build
+
+Build both frontend apps:
+
+```sh
+npm run build
 ```
+
+The storefront build is written to `frontend/dist/`; the admin preview build is written to `admin/dist/`. The backend services run on Node.js and are not included in either static build.
 
 ## Architecture
 
-- **Routes and SEO:** `App.tsx` maps URLs such as `/shop`, `/product/root-rise`, `/cart` and `/checkout` to page components. It also updates the browser title, description, Open Graph tags and canonical URL when the route changes. The page content stays in `Storefront.tsx` so the initial project is easy to explore. As it grows, move each page into its own file under `src/pages/`.
-- **Product data:** `data/products.ts` defines the `Product` type once and holds the catalog. Components read product data from here instead of duplicating names or prices in page markup. A future CMS or API can replace this module while keeping the same type shape.
-- **Cart:** `store/cart.ts` exposes small cart actions (`add`, `setQuantity`, `remove`, `clear`). Zustand persists the cart locally, so refreshing the same browser keeps its cart. This is device-local storage, not a shared account cart.
-- **Store settings:** `config/store.ts` is the single place for store-owned contact, UPI, language and delivery settings. Do not put private payment secrets here; this file ships to the browser.
-- **Language:** `i18n.ts` contains English and Telugu UI labels. Product names and other customer-facing content also need human-reviewed translations before launch.
-- **Design:** `styles.css` contains component styles and responsive breakpoints. CSS custom properties at the top define the palette and can be changed to re-theme the storefront. Tailwind is configured for additional utility styling where useful.
-- **Checkout:** checkout validates basic customer details, builds an order summary, saves a convenience copy to local browser storage and can open WhatsApp with the prefilled order request. A production order system should submit to a server API, validate on the server, and integrate a payment provider.
-- **Images:** catalog illustrations are generated as local SVG data URLs in `data/products.ts`; they need replacement by approved product photography for production.
+```text
+Farmer browser ──> Storefront app ──┐
+                                    ├──> API Gateway ──> Auth service
+Staff browser ───> Admin app ───────┘                 ├─> Catalog service
+                                                      ├─> Orders service
+                                                      └─> Fulfillment service
+```
 
-## Routes included
+Each backend service is a separate Node.js process with its own HTTP routes and storage adapter. The local prototype uses JSON files to keep testing free and simple. It demonstrates service boundaries; it is not a production data platform. Before live use, replace local JSON persistence with a secured database, replace demo authentication with production identity and reviewed access policies, configure backups, and deploy each service behind production-grade routing and monitoring.
 
-| Route | Purpose |
-| --- | --- |
-| `/` | Seasonal home, categories, crops and featured items |
-| `/shop` | Searchable catalog with crop, brand, category and type filters |
-| `/product/:id` | Product facts, quantity selection, cart and WhatsApp enquiry |
-| `/cart` | Persistent cart, quantities and estimated delivery summary |
-| `/checkout` | Address, PIN code, UPI/COD selection and order request |
-| `/account` | Order requests saved in the current browser |
-| `/about` | Store story and responsible product information |
-| `/contact` | Contact options and setup hints |
-| `/shipping-policy` | Delivery coverage and estimate explanation |
-| `/faq` | Common shopping and product-use questions |
+### Repository map
 
-## Static hosting notes
+```text
+AgriCom/
+├── frontend/                         # Farmer-facing Vite + React + TypeScript app
+│   ├── index.html                    # Storefront document and share metadata
+│   ├── vite.config.ts                # Frontend development/build settings
+│   └── src/
+│       ├── App.tsx                   # Storefront routes, shell and SEO metadata
+│       ├── components/Storefront.tsx # Current storefront page and UI components
+│       ├── data/products.ts          # Product and order TypeScript shapes + demo fallback
+│       ├── services/api.ts           # HTTP client for the API gateway
+│       ├── store/catalog.ts          # Loads published products from Catalog service
+│       ├── store/cart.ts             # Local browser cart state
+│       ├── config/store.ts           # Public-facing store settings; never put secrets here
+│       ├── i18n.ts                   # English and Telugu UI strings
+│       └── styles.css                # Storefront design tokens and responsive styles
+├── admin/                            # Separate local owner/admin frontend preview
+│   ├── index.html                    # Admin app entry document, excluded from search indexing
+│   ├── vite.config.ts                # Admin app dev/build settings
+│   └── src/AdminApp.tsx              # Sign-in, drafts, request queue, fulfilment and permissions
+├── backend/
+│   ├── data/catalog.seed.json        # Committed demo catalog used for local startup
+│   ├── services/api-gateway/         # Routes requests and checks demo role permissions
+│   ├── services/auth/                # Local demo login, sessions and role permissions
+│   ├── services/catalog/             # Product reads, draft creation and publishing
+│   ├── services/orders/              # Validates requests and records order state
+│   ├── services/fulfillment/         # Supplier-direct vs own-stock assignment
+│   ├── services/payments/README.md   # Planned boundary; no payment collection yet
+│   └── services/notifications/README.md # Planned boundary; manual WhatsApp follow-up now
+├── packages/contracts/               # HTTP API route and payload documentation
+├── scripts/dev.mjs                   # Starts all local applications and services
+├── scripts/dev-backend.mjs           # Starts backend service processes
+├── PROJECT_BRIEF.md                  # Product goals and launch assumptions
+└── README.md                         # Setup, limits and architecture guide
+```
 
-The project uses client-side routing. Configure your static host to serve `index.html` for unknown paths so direct visits to routes such as `/shop` work. For GitHub Pages, configure the Vite `base` path to the repository subpath before publishing. No server rendering is required for this starter.
+## Service responsibilities
+
+- **API Gateway:** one local API entry point for browser apps; forwards calls and checks the demo user’s role permissions.
+- **Auth:** local demo customer/admin login. Owner, Operations, Catalog manager, and Customer roles have different permissions.
+- **Catalog:** owns product data and draft/published status. Only published products are returned to the storefront.
+- **Orders:** validates customer details and product IDs, recalculates totals, saves order requests, and updates their status.
+- **Fulfillment:** records whether an order is assigned to a supplier or AgriCom stock. After a source is chosen, staff can add the supplier name and a tracking number on the request row.
+- **Batch orders:** the admin can select multiple requests and apply a status update together; individual requests still have their own status.
+- **Payments:** documented future boundary. Add only after choosing a provider and implementing server-side verification.
+- **Notifications:** documented future boundary. Current checkout can prepare a WhatsApp message for manual confirmation.
+
+The local JSON files are a temporary test adapter. A production service should own its data and expose it through APIs. The first hosted test may use one database with separate service schemas to control cost, but that is a migration compromise—not strict database isolation.
+
+## Before any public launch
+
+Replace demo sign-in with production authentication (including MFA for staff) and reviewed server-side authorization, and add secure database access, backups, rate limiting, production secrets, privacy notices, audit history and controlled deployments. Verify supplier/product documentation, product-label content, prices, shipping eligibility and delivery terms. The current demo-credential admin is intentionally not suitable for a public or shared preview.

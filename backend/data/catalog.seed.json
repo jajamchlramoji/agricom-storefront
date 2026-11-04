@@ -1,0 +1,279 @@
+{
+  "categories": [
+    {
+      "id": "Plant nutrition",
+      "label": "Plant nutrition",
+      "icon": "☘",
+      "color": "sage"
+    },
+    {
+      "id": "Pest management",
+      "label": "Pest care",
+      "icon": "✳",
+      "color": "gold"
+    },
+    {
+      "id": "Disease management",
+      "label": "Disease care",
+      "icon": "❋",
+      "color": "rose"
+    },
+    {
+      "id": "Soil health",
+      "label": "Soil health",
+      "icon": "♧",
+      "color": "earth"
+    }
+  ],
+  "products": [
+    {
+      "id": "root-rise",
+      "name": "RootRise Bio Booster",
+      "localName": "రూట్‌రైజ్ బయో బూస్టర్",
+      "category": "Plant nutrition",
+      "crop": [
+        "Cotton",
+        "Chilli",
+        "Vegetables"
+      ],
+      "brand": "AgriCom Select",
+      "price": 640,
+      "compareAt": 720,
+      "size": "500 ml",
+      "rating": 4.8,
+      "reviews": 126,
+      "badge": "Bestseller",
+      "description": "A starter example for root and soil support. Confirm composition and approved crop claims from the supplier label.",
+      "ingredients": "See verified product label before publishing.",
+      "usage": "Use only as directed on the final registered product label. Do not infer dosage from this demo listing.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23637d4a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23d9a342%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23d9a342%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3EROOTRISE%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": true,
+      "stock": 18,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "cotton-shield",
+      "name": "Cotton Shield Care",
+      "localName": "కాటన్ షీల్డ్ కేర్",
+      "category": "Pest management",
+      "crop": [
+        "Cotton"
+      ],
+      "brand": "FieldGuard",
+      "price": 890,
+      "compareAt": 990,
+      "size": "250 ml",
+      "rating": 4.6,
+      "reviews": 84,
+      "badge": "Field pick",
+      "description": "Example pest management listing for cotton. Replace with a verified product and label details.",
+      "ingredients": "Add active ingredient and concentration from registered label.",
+      "usage": "Always follow the approved label, local recommendations and personal protective equipment guidance.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23435d3b%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23cb7841%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23cb7841%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3ECOTTON%20CARE%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 12,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "chilli-bloom",
+      "name": "Chilli Bloom Nutrition",
+      "localName": "మిర్చి బ్లూమ్ న్యూట్రిషన్",
+      "category": "Plant nutrition",
+      "crop": [
+        "Chilli",
+        "Vegetables"
+      ],
+      "brand": "AgriCom Select",
+      "price": 560,
+      "size": "500 ml",
+      "rating": 4.7,
+      "reviews": 59,
+      "description": "Example crop nutrition listing for chilli and vegetables. Confirm crop suitability with the product label.",
+      "ingredients": "Nutrient analysis to be added from supplier specification.",
+      "usage": "Follow supplier label instructions and consult a qualified agronomist for local guidance.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%2358784a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23b95338%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23b95338%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3ECHILLI%20BLOOM%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 22,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "fungi-guard",
+      "name": "FungiGuard Crop Care",
+      "localName": "ఫంగీగార్డ్ క్రాప్ కేర్",
+      "category": "Disease management",
+      "crop": [
+        "Cotton",
+        "Chilli",
+        "Paddy"
+      ],
+      "brand": "FieldGuard",
+      "price": 1120,
+      "compareAt": 1240,
+      "size": "500 g",
+      "rating": 4.5,
+      "reviews": 41,
+      "description": "Example crop disease management listing. Product registration, crops and claims must be verified before sale.",
+      "ingredients": "Add active ingredient and concentration from registered label.",
+      "usage": "Use only for crops and conditions listed on the approved product label.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23536947%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23a4a951%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23a4a951%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3EFUNGI%20GUARD%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 8,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "micro-green",
+      "name": "MicroGreen Trace Mix",
+      "localName": "మైక్రోగ్రీన్ ట్రేస్ మిక్స్",
+      "category": "Plant nutrition",
+      "crop": [
+        "Cotton",
+        "Chilli",
+        "Paddy",
+        "Vegetables"
+      ],
+      "brand": "AgriCom Select",
+      "price": 480,
+      "size": "1 kg",
+      "rating": 4.4,
+      "reviews": 33,
+      "description": "Example micronutrient listing. Replace composition and crop guidance with approved supplier information.",
+      "ingredients": "Micronutrient analysis to be added from supplier specification.",
+      "usage": "Follow the verified product label. Avoid tank mixing unless label guidance allows it.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23657a4b%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23d5b954%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23d5b954%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3EMICROGREEN%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 27,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "soil-vital",
+      "name": "SoilVital Organic Care",
+      "localName": "సాయిల్‌వైటల్ ఆర్గానిక్ కేర్",
+      "category": "Soil health",
+      "crop": [
+        "Cotton",
+        "Chilli",
+        "Paddy"
+      ],
+      "brand": "EarthKind",
+      "price": 760,
+      "size": "1 kg",
+      "rating": 4.9,
+      "reviews": 94,
+      "description": "Example soil health listing. Verify ingredients and organic certification before making claims.",
+      "ingredients": "Supplier composition and certification details to be added.",
+      "usage": "Use in line with the supplier directions and crop requirements.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%2349664a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23b38249%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23b38249%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3ESOILVITAL%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": true,
+      "stock": 31,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "paddy-nourish",
+      "name": "Paddy Nourish Granules",
+      "localName": "ప్యాడీ నరిష్ గ్రాన్యూల్స్",
+      "category": "Plant nutrition",
+      "crop": [
+        "Paddy"
+      ],
+      "brand": "HarvestRoot",
+      "price": 690,
+      "size": "5 kg",
+      "rating": 4.3,
+      "reviews": 27,
+      "description": "Example paddy nutrition listing. Confirm approved crop stage and instructions before publishing.",
+      "ingredients": "Add verified nutrient analysis.",
+      "usage": "Follow the final label directions and local agronomy recommendations.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%2365784a%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23c7a853%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23c7a853%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3EPADDY%20NOURISH%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 16,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "neem-care",
+      "name": "NeemCare Botanical",
+      "localName": "నీమ్‌కేర్ బొటానికల్",
+      "category": "Pest management",
+      "crop": [
+        "Cotton",
+        "Chilli",
+        "Vegetables"
+      ],
+      "brand": "EarthKind",
+      "price": 520,
+      "size": "500 ml",
+      "rating": 4.6,
+      "reviews": 72,
+      "description": "Example botanical pest care listing. Verify the formulation and allowed claims from the label.",
+      "ingredients": "Add verified composition and registration details.",
+      "usage": "Use only according to product label directions and local regulations.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%233f6946%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23d6bd68%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23d6bd68%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3ENEEMCARE%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": true,
+      "stock": 20,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "field-mineral",
+      "name": "Field Mineral Balance",
+      "localName": "ఫీల్డ్ మినరల్ బ్యాలెన్స్",
+      "category": "Plant nutrition",
+      "crop": [
+        "Cotton",
+        "Chilli"
+      ],
+      "brand": "HarvestRoot",
+      "price": 980,
+      "size": "1 kg",
+      "rating": 4.5,
+      "reviews": 38,
+      "description": "Example soil and plant nutrition listing. Confirm nutrient analysis and claims from supplier documentation.",
+      "ingredients": "Add verified nutrient analysis and guaranteed composition.",
+      "usage": "Use according to the final product label and qualified local advice.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%235d7543%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23c7a24e%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23c7a24e%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3EMINERAL%20BALANCE%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 14,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    },
+    {
+      "id": "leaf-care",
+      "name": "LeafCare Crop Support",
+      "localName": "లీఫ్‌కేర్ క్రాప్ సపోర్ట్",
+      "category": "Disease management",
+      "crop": [
+        "Chilli",
+        "Vegetables"
+      ],
+      "brand": "FieldGuard",
+      "price": 1380,
+      "size": "500 ml",
+      "rating": 4.7,
+      "reviews": 52,
+      "description": "Example crop care listing. Verify formulation, registration and approved crop uses before publishing.",
+      "ingredients": "Add active ingredient and concentration only from the approved label.",
+      "usage": "Use only for crops and conditions on the approved label. Follow all safety precautions.",
+      "image": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20600%20600%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22bg%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%23f0eadb%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23dce4d2%22%2F%3E%3C%2FlinearGradient%3E%3ClinearGradient%20id%3D%22b%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20stop-color%3D%22%234f6e45%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%238c9d57%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22600%22%20height%3D%22600%22%20rx%3D%2244%22%20fill%3D%22url(%23bg)%22%2F%3E%3Ccircle%20cx%3D%22460%22%20cy%3D%22110%22%20r%3D%2288%22%20fill%3D%22%23fff9e8%22%20opacity%3D%22.55%22%2F%3E%3Cpath%20d%3D%22M285%20495C270%20365%20295%20260%20385%20160%22%20fill%3D%22none%22%20stroke%3D%22%23526b3b%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M300%20385C180%20355%20154%20270%20165%20211c99%203%20157%2067%20135%20174Zm36-95c35-118%20109-143%20166-126-14%2094-79%20150-166%20126Zm-42%20135c-107-9-150%2047-155%20107%2084%2013%20146-20%20155-107Z%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%22412%22%20cy%3D%22183%22%20r%3D%2225%22%20fill%3D%22%23b96045%22%2F%3E%3Ccircle%20cx%3D%22240%22%20cy%3D%22304%22%20r%3D%2220%22%20fill%3D%22%23b96045%22%2F%3E%3Crect%20x%3D%22150%22%20y%3D%22455%22%20width%3D%22300%22%20height%3D%22105%22%20rx%3D%2220%22%20fill%3D%22%23fffdf6%22%20stroke%3D%22%23d6ceb9%22%20stroke-width%3D%223%22%2F%3E%3Ctext%20x%3D%22300%22%20y%3D%22500%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2221%22%20font-weight%3D%22700%22%20fill%3D%22%23173c2e%22%3ELEAFCARE%3C%2Ftext%3E%3Ctext%20x%3D%22300%22%20y%3D%22530%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2213%22%20fill%3D%22%2372806a%22%3EAGRICOM%20%E2%80%A2%20FIELD%20SERIES%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "organic": false,
+      "stock": 9,
+      "status": "published",
+      "availability": "confirm_with_supplier",
+      "fulfillmentSource": "supplier"
+    }
+  ]
+}
