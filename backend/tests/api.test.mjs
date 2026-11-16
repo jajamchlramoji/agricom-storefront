@@ -86,6 +86,76 @@ describe('catalog', () => {
   });
 });
 
+describe('catalog edits', () => {
+  const edit = (id, body, token = tokens.catalog) => api(`/catalog/admin/products/${id}`, { method: 'PATCH', token, body });
+  test('ratings, reviews and ids cannot be edited', async () => {
+    assert.equal((await edit('root-rise', { rating: 5 })).status, 400);
+    assert.equal((await edit('root-rise', { reviews: 9999 })).status, 400);
+    assert.equal((await edit('root-rise', { id: 'other' })).status, 400);
+    const product = (await api('/catalog/admin/products', { token: tokens.catalog })).data.products.find((item) => item.id === 'root-rise');
+    assert.equal(product.rating, 4.8);
+  });
+  test('rejects wrong types and unknown values', async () => {
+    assert.equal((await edit('root-rise', { price: 'free' })).status, 400);
+    assert.equal((await edit('root-rise', { price: -5 })).status, 400);
+    assert.equal((await edit('root-rise', { status: 'live' })).status, 400);
+    assert.equal((await edit('root-rise', { category: 'Made up' })).status, 400);
+    assert.equal((await edit('missing-product', { price: 10 })).status, 404);
+  });
+  test('allowed edits are saved with who made them', async () => {
+    const saved = await edit('micro-green', { price: 495, availability: 'in_stock' });
+    assert.equal(saved.status, 200);
+    assert.equal(saved.data.product.price, 495);
+    assert.equal(saved.data.product.updatedBy, 'catalog@agricom.local');
+  });
+  test('publishing is recorded in the product history', async () => {
+    const archived = await edit('micro-green', { status: 'archived' });
+    const last = archived.data.product.history.at(-1);
+    assert.deepEqual({ from: last.from, to: last.to, by: last.by.email }, { from: 'published', to: 'archived', by: 'catalog@agricom.local' });
+    await edit('micro-green', { status: 'published' });
+  });
+});
+
+describe('order status', () => {
+  const move = (id, status, token = tokens.operations) => api(`/admin/orders/${id}/status`, { method: 'PATCH', token, body: { status } });
+  test('an order moves forward one step at a time and keeps a history', async () => {
+    const { id } = (await placeOrder()).data.order;
+    for (const status of ['checking_availability', 'confirmed', 'ready_to_dispatch', 'dispatched', 'delivered']) {
+      assert.equal((await move(id, status)).status, 200, status);
+    }
+    const order = (await api('/admin/orders', { token: tokens.operations })).data.orders.find((item) => item.id === id);
+    assert.deepEqual(order.history.map((entry) => entry.to), ['new_request', 'checking_availability', 'confirmed', 'ready_to_dispatch', 'dispatched', 'delivered']);
+    assert.equal(order.history[0].by.email, 'farmer@agricom.local');
+    assert.equal(order.history[1].by.email, 'ops@agricom.local');
+    assert.deepEqual(order.nextStatuses, []);
+  });
+  test('skipping steps, going backwards and reopening are refused', async () => {
+    const { id } = (await placeOrder()).data.order;
+    assert.equal((await move(id, 'delivered')).status, 409);
+    assert.equal((await move(id, 'new_request')).status, 409);
+    assert.equal((await move(id, 'not_a_status')).status, 400);
+    await move(id, 'cancelled');
+    assert.equal((await move(id, 'checking_availability')).status, 409);
+    assert.equal((await move('AG-missing', 'cancelled')).status, 404);
+  });
+  test('a batch updates the orders that can move and reports the rest', async () => {
+    const first = (await placeOrder()).data.order.id;
+    const second = (await placeOrder()).data.order.id;
+    await move(second, 'cancelled');
+    const batch = await api('/admin/orders/batch', { method: 'PATCH', token: tokens.operations, body: { ids: [first, second], status: 'checking_availability' } });
+    assert.equal(batch.status, 200);
+    assert.equal(batch.data.updated, 1);
+    assert.deepEqual(batch.data.skipped.map((item) => item.id), [second]);
+    const orders = (await api('/admin/orders', { token: tokens.operations })).data.orders;
+    assert.equal(orders.find((item) => item.id === first).status, 'checking_availability');
+    assert.equal(orders.find((item) => item.id === second).status, 'cancelled');
+  });
+  test('the catalog manager cannot change order status', async () => {
+    const { id } = (await placeOrder()).data.order;
+    assert.equal((await move(id, 'cancelled', tokens.catalog)).status, 403);
+  });
+});
+
 describe('orders', () => {
   test('rejects a bad phone number, PIN or empty cart', async () => {
     assert.equal((await api('/orders', { method: 'POST', token: tokens.customer, body: { ...address, phone: '12345', items: [{ productId: 'root-rise', quantity: 1 }] } })).status, 400);
@@ -124,6 +194,7 @@ describe('fulfilment', () => {
     const saved = await api(`/fulfillment/admin/orders/${id}`, { method: 'PUT', token: tokens.operations, body: { source: 'supplier', supplierName: ' Guntur Agro ', trackingNumber: 'TRK1' } });
     assert.equal(saved.status, 200);
     assert.equal(saved.data.fulfillment.supplierName, 'Guntur Agro');
+    assert.equal(saved.data.fulfillment.updatedBy, 'ops@agricom.local');
     const read = await api(`/fulfillment/admin/orders/${id}`, { token: tokens.operations });
     assert.equal(read.data.fulfillment.trackingNumber, 'TRK1');
   });

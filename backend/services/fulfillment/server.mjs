@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import path from 'node:path';
-import { bodyOf, send } from '../../lib/http.mjs';
+import { actorOf, bodyOf, send } from '../../lib/http.mjs';
 import { dataDir, load as loadJson, locked, save as saveJson } from '../../lib/json-store.mjs';
 
 const file = path.join(dataDir, 'fulfillment.json');
@@ -20,7 +20,7 @@ createServer(async (req, res) => {
       if (!['supplier', 'own_stock'].includes(input.source)) return send(res, 400, { error: 'Choose supplier or AgriCom stock.' });
       return await locked(file, async () => {
       const records = await load();
-      records[decodeURIComponent(match[1])] = { orderId: decodeURIComponent(match[1]), source: input.source, supplierName: input.supplierName?.trim() || '', trackingNumber: input.trackingNumber?.trim() || '', updatedAt: new Date().toISOString() };
+      records[decodeURIComponent(match[1])] = { orderId: decodeURIComponent(match[1]), source: input.source, supplierName: input.supplierName?.trim() || '', trackingNumber: input.trackingNumber?.trim() || '', updatedAt: new Date().toISOString(), updatedBy: actorOf(req)?.email || null };
       await save(records); return send(res, 200, { fulfillment: records[decodeURIComponent(match[1])] });
       });
     }
