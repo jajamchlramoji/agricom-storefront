@@ -9,8 +9,11 @@ export const seedDir = path.resolve(path.dirname(fileURLToPath(import.meta.url))
 export const dataDir = process.env.AGRICOM_DATA_DIR ? path.resolve(process.env.AGRICOM_DATA_DIR) : seedDir;
 
 export async function load(file, fallback) {
-  try { return JSON.parse(await readFile(file, 'utf8')); }
-  catch { return typeof fallback === 'function' ? fallback() : fallback; }
+  try {
+    return JSON.parse(await readFile(file, 'utf8'));
+  } catch {
+    return typeof fallback === 'function' ? fallback() : fallback;
+  }
 }
 
 /** Write to a temporary file, then rename, so a crash never leaves a half-written file. */
@@ -25,6 +28,9 @@ const queues = new Map();
 /** Run read-change-save steps for one file one at a time, so two requests cannot overwrite each other. */
 export function locked(file, task) {
   const run = (queues.get(file) || Promise.resolve()).then(task, task);
-  queues.set(file, run.catch(() => undefined));
+  queues.set(
+    file,
+    run.catch(() => undefined),
+  );
   return run;
 }

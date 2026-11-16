@@ -17,7 +17,8 @@ const label = (status) => status.replaceAll('_', ' ');
 /** Moves the order and records who did it. Returns an error message if the move is not allowed. */
 export function moveOrder(order, status, actor) {
   if (order.status === status) return `Order ${order.id} is already ${label(status)}.`;
-  if (!nextStatuses(order.status).includes(status)) return `Order ${order.id} cannot go from ${label(order.status)} to ${label(status)}.`;
+  if (!nextStatuses(order.status).includes(status))
+    return `Order ${order.id} cannot go from ${label(order.status)} to ${label(status)}.`;
   const at = new Date().toISOString();
   order.history = [...(order.history || []), { at, from: order.status, to: status, by: actor }];
   order.status = status;

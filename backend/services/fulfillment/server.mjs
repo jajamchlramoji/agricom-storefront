@@ -11,17 +11,34 @@ const save = (data) => saveJson(file, data);
 createServer(async (req, res) => {
   try {
     const url = new URL(req.url || '/', 'http://127.0.0.1');
-    if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { service: 'fulfillment', status: 'ok' });
-    if (req.method === 'GET' && url.pathname === '/sources') return send(res, 200, { sources: [{ id: 'supplier', label: 'Supplier direct' }, { id: 'own_stock', label: 'AgriCom stock' }] });
+    if (req.method === 'GET' && url.pathname === '/health')
+      return send(res, 200, { service: 'fulfillment', status: 'ok' });
+    if (req.method === 'GET' && url.pathname === '/sources')
+      return send(res, 200, {
+        sources: [
+          { id: 'supplier', label: 'Supplier direct' },
+          { id: 'own_stock', label: 'AgriCom stock' },
+        ],
+      });
     const match = url.pathname.match(/^\/admin\/orders\/([^/]+)$/);
-    if (req.method === 'GET' && match) return send(res, 200, { fulfillment: (await load())[decodeURIComponent(match[1])] || null });
+    if (req.method === 'GET' && match)
+      return send(res, 200, { fulfillment: (await load())[decodeURIComponent(match[1])] || null });
     if (req.method === 'PUT' && match) {
       const input = await bodyOf(req);
-      if (!['supplier', 'own_stock'].includes(input.source)) return send(res, 400, { error: 'Choose supplier or AgriCom stock.' });
+      if (!['supplier', 'own_stock'].includes(input.source))
+        return send(res, 400, { error: 'Choose supplier or AgriCom stock.' });
       return await locked(file, async () => {
-      const records = await load();
-      records[decodeURIComponent(match[1])] = { orderId: decodeURIComponent(match[1]), source: input.source, supplierName: input.supplierName?.trim() || '', trackingNumber: input.trackingNumber?.trim() || '', updatedAt: new Date().toISOString(), updatedBy: actorOf(req)?.email || null };
-      await save(records); return send(res, 200, { fulfillment: records[decodeURIComponent(match[1])] });
+        const records = await load();
+        records[decodeURIComponent(match[1])] = {
+          orderId: decodeURIComponent(match[1]),
+          source: input.source,
+          supplierName: input.supplierName?.trim() || '',
+          trackingNumber: input.trackingNumber?.trim() || '',
+          updatedAt: new Date().toISOString(),
+          updatedBy: actorOf(req)?.email || null,
+        };
+        await save(records);
+        return send(res, 200, { fulfillment: records[decodeURIComponent(match[1])] });
       });
     }
     return send(res, 404, { error: 'Fulfillment route not found.' });

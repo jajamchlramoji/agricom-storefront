@@ -12,7 +12,10 @@ const port = Number(process.env.CATALOG_PORT || 4101);
 const readCatalog = () => load(file, () => load(seedFile));
 const saveCatalog = (catalog) => save(file, catalog);
 function slug(text) {
-  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 async function handle(req, res) {
@@ -23,7 +26,8 @@ async function handle(req, res) {
     const visible = catalog.products.filter((product) => product.status === 'published');
     return send(res, 200, { products: visible, categories: catalog.categories });
   }
-  if (req.method === 'GET' && url.pathname === '/admin/products') return send(res, 200, { products: catalog.products, categories: catalog.categories });
+  if (req.method === 'GET' && url.pathname === '/admin/products')
+    return send(res, 200, { products: catalog.products, categories: catalog.categories });
 
   const categoryIds = catalog.categories.map((category) => category.id);
   const actor = actorOf(req);
@@ -36,16 +40,27 @@ async function handle(req, res) {
     const now = new Date().toISOString();
     const product = {
       id: `${slug(values.name) || 'product'}-${randomUUID().slice(0, 6)}`,
-      name: values.name, localName: values.localName || values.name,
-      category: values.category, crop: values.crop || [], brand: values.brand || 'Unassigned',
-      price: values.price, size: values.size, rating: 0, reviews: 0,
+      name: values.name,
+      localName: values.localName || values.name,
+      category: values.category,
+      crop: values.crop || [],
+      brand: values.brand || 'Unassigned',
+      price: values.price,
+      size: values.size,
+      rating: 0,
+      reviews: 0,
       description: values.description || 'Product details require review before publishing.',
       ingredients: values.ingredients || 'Add verified information from the approved product label.',
       usage: values.usage || 'Follow the approved product label.',
-      image: values.image || catalog.products[0]?.image || '', organic: values.organic || false, stock: values.stock || 0,
-      availability: values.availability || 'confirm_with_supplier', fulfillmentSource: values.fulfillmentSource || 'supplier',
+      image: values.image || catalog.products[0]?.image || '',
+      organic: values.organic || false,
+      stock: values.stock || 0,
+      availability: values.availability || 'confirm_with_supplier',
+      fulfillmentSource: values.fulfillmentSource || 'supplier',
       // New products always start as drafts; publishing is a separate, reviewed step.
-      status: 'draft', updatedAt: now, updatedBy: actor?.email || null,
+      status: 'draft',
+      updatedAt: now,
+      updatedBy: actor?.email || null,
       history: [{ at: now, from: null, to: 'draft', by: actor }],
     };
     if (values.compareAt) product.compareAt = values.compareAt;
@@ -64,7 +79,10 @@ async function handle(req, res) {
     if (values.status && values.status !== product.status) {
       product.history = [...(product.history || []), { at: now, from: product.status, to: values.status, by: actor }];
     }
-    if (values.compareAt === null) { delete product.compareAt; delete values.compareAt; }
+    if (values.compareAt === null) {
+      delete product.compareAt;
+      delete values.compareAt;
+    }
     Object.assign(product, values, { updatedAt: now, updatedBy: actor?.email || null });
     await saveCatalog(catalog);
     return send(res, 200, { product });
