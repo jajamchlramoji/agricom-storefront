@@ -1,20 +1,16 @@
 import { createServer } from 'node:http';
-import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { bodyOf, send } from '../../lib/http.mjs';
+import { dataDir, load as loadJson, locked, save as saveJson } from '../../lib/json-store.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../data');
-const file = path.join(root, 'orders.json');
+const file = path.join(dataDir, 'orders.json');
 const catalogUrl = process.env.CATALOG_SERVICE_URL || 'http://127.0.0.1:4101';
 const port = Number(process.env.ORDERS_PORT || 4102);
-async function load() { try { return JSON.parse(await readFile(file, 'utf8')); } catch { return []; } }
-async function save(orders) { await writeFile(file, `${JSON.stringify(orders, null, 2)}\n`); }
-async function bodyOf(req) { let raw = ''; for await (const chunk of req) raw += chunk; return raw ? JSON.parse(raw) : {}; }
-function send(res, status, payload) { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(payload)); }
+const load = () => loadJson(file, []);
+const save = (orders) => saveJson(file, orders);
 
-createServer(async (req, res) => {
-  try {
+async function handle(req, res) {
     const url = new URL(req.url || '/', 'http://127.0.0.1');
     if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { service: 'orders', status: 'ok' });
     if (req.method === 'GET' && url.pathname === '/admin/orders') return send(res, 200, { orders: await load() });
@@ -68,6 +64,12 @@ createServer(async (req, res) => {
       await save(orders); return send(res, 200, { updated, orders: orders.filter((order) => selected.has(order.id)) });
     }
     return send(res, 404, { error: 'Orders route not found.' });
+}
+
+createServer(async (req, res) => {
+  try {
+    // Reads are safe to run together; changes take the file lock so none are lost.
+    return await (req.method === 'GET' ? handle(req, res) : locked(file, () => handle(req, res)));
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
     console.error('[orders]', error);

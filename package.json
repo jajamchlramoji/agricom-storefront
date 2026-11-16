@@ -8,6 +8,7 @@
     "dev:storefront": "cd frontend && vite --host 127.0.0.1",
     "dev:admin": "cd admin && vite --host 127.0.0.1",
     "dev:backend": "node scripts/dev-backend.mjs",
+    "test": "node --test backend/tests/*.test.mjs",
     "build": "cd frontend && tsc -b tsconfig.json && vite build && cd ../admin && tsc -p tsconfig.json && vite build",
     "preview": "cd frontend && vite preview --host 127.0.0.1",
     "preview:admin": "cd admin && vite preview --host 127.0.0.1 --port 4174"

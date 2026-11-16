@@ -1,6 +1,7 @@
 import { createServer } from 'node:http';
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
+import { bodyOf, send } from '../../lib/http.mjs';
 
 const scrypt = promisify(scryptCallback);
 const port = Number(process.env.AUTH_PORT || 4104);
@@ -25,8 +26,6 @@ async function hashPassword(password) {
 }
 const passwordRecords = new Map();
 for (const user of users) passwordRecords.set(user.id, await hashPassword(user.password));
-async function bodyOf(req) { let raw = ''; for await (const chunk of req) raw += chunk; return raw ? JSON.parse(raw) : {}; }
-function send(res, status, data) { res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' }); res.end(JSON.stringify(data)); }
 function bearer(req) { const value = req.headers.authorization || ''; return value.startsWith('Bearer ') ? value.slice(7) : ''; }
 function safeUser(user) { return { id: user.id, email: user.email, name: user.name, role: user.role, permissions: [...(permissions[user.role] || [])] }; }
 

@@ -1,36 +1,20 @@
 import { createServer } from 'node:http';
-import { readFile, writeFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { bodyOf, send } from '../../lib/http.mjs';
+import { dataDir, load, locked, save, seedDir } from '../../lib/json-store.mjs';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../data');
-const file = path.join(root, 'catalog.local.json');
-const seedFile = path.join(root, 'catalog.seed.json');
+const file = path.join(dataDir, 'catalog.local.json');
+const seedFile = path.join(seedDir, 'catalog.seed.json');
 const port = Number(process.env.CATALOG_PORT || 4101);
 
-async function readCatalog() {
-  try { return JSON.parse(await readFile(file, 'utf8')); }
-  catch { return JSON.parse(await readFile(seedFile, 'utf8')); }
-}
-async function saveCatalog(catalog) {
-  await writeFile(file, `${JSON.stringify(catalog, null, 2)}\n`);
-}
-async function bodyOf(req) {
-  let raw = '';
-  for await (const chunk of req) raw += chunk;
-  return raw ? JSON.parse(raw) : {};
-}
-function send(res, status, payload) {
-  res.writeHead(status, { 'content-type': 'application/json; charset=utf-8' });
-  res.end(JSON.stringify(payload));
-}
+const readCatalog = () => load(file, () => load(seedFile));
+const saveCatalog = (catalog) => save(file, catalog);
 function slug(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-createServer(async (req, res) => {
-  try {
+async function handle(req, res) {
     const url = new URL(req.url || '/', 'http://127.0.0.1');
     const catalog = await readCatalog();
     if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { service: 'catalog', status: 'ok' });
@@ -71,6 +55,12 @@ createServer(async (req, res) => {
       return send(res, 200, { product });
     }
     return send(res, 404, { error: 'Catalog route not found.' });
+}
+
+createServer(async (req, res) => {
+  try {
+    // Reads are safe to run together; changes take the file lock so none are lost.
+    return await (req.method === 'GET' ? handle(req, res) : locked(file, () => handle(req, res)));
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
     console.error('[catalog]', error);
