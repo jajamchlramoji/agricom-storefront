@@ -172,6 +172,15 @@ describe('orders', () => {
     const large = await placeOrder([{ productId: 'root-rise', quantity: 3 }]);
     assert.equal(large.data.order.total, 640 * 3);
   });
+  test('a newly published product can be ordered, an unavailable one cannot', async () => {
+    const created = await api('/catalog/admin/products', { method: 'POST', token: tokens.catalog, body: { name: 'Fresh Listing', category: 'Soil health', price: 800, size: '5 kg' } });
+    const { id } = created.data.product;
+    assert.equal(created.data.product.stock, 0);
+    await api(`/catalog/admin/products/${id}`, { method: 'PATCH', token: tokens.catalog, body: { status: 'published' } });
+    assert.equal((await placeOrder([{ productId: id, quantity: 2 }])).status, 201);
+    await api(`/catalog/admin/products/${id}`, { method: 'PATCH', token: tokens.catalog, body: { availability: 'unavailable' } });
+    assert.equal((await placeOrder([{ productId: id, quantity: 1 }])).status, 400);
+  });
   test('a customer sees their own orders', async () => {
     const placed = await placeOrder();
     const mine = await api('/orders/mine', { token: tokens.customer });

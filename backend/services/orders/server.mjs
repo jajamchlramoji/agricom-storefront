@@ -41,7 +41,7 @@ async function handle(req, res) {
     const items = input.items.map((line) => {
       const product = products.find((candidate) => candidate.id === line.productId);
       const quantity = Math.floor(Number(line.quantity));
-      if (!product || quantity < 1 || quantity > 99) return null;
+      if (!product || product.availability === 'unavailable' || quantity < 1 || quantity > 99) return null;
       return { productId: product.id, name: product.name, size: product.size, unitPrice: product.price, quantity, fulfillmentSource: product.fulfillmentSource || 'supplier' };
     });
     if (items.some((item) => !item)) return send(res, 400, { error: 'One or more products are unavailable. Refresh the shop and try again.' });

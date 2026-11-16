@@ -1,10 +1,15 @@
 /** Starter catalog data. Replace every example SKU, label, stock value and image with verified supplier information before taking real orders. */
 export type ProductCategory = 'Plant nutrition' | 'Pest management' | 'Disease management' | 'Soil health';
+export type Availability = 'confirm_with_supplier' | 'in_stock' | 'unavailable';
 export type Product = {
   id: string; name: string; localName: string; category: ProductCategory; crop: string[]; brand: string;
   price: number; compareAt?: number; size: string; rating: number; reviews: number; badge?: string;
-  description: string; ingredients: string; usage: string; image: string; organic: boolean; stock: number;
+  description: string; ingredients: string; usage: string; image: string; organic: boolean; stock: number; availability?: Availability;
 };
+/** Most a customer can request of one product. The orders service enforces the same limit. */
+export const maxQuantity = 99;
+/** Orders are requests confirmed with the supplier, so a product is orderable unless staff mark it unavailable. */
+export const canOrder = (product: Product | undefined) => Boolean(product) && product!.availability !== 'unavailable';
 export type Category = { id: string; label: string; icon: string; color: string };
 export type CartItem = { productId: string; quantity: number };
 export type OrderPayload = { id: string; createdAt: string; name: string; phone: string; address: string; pincode: string; payment: 'UPI' | 'Cash on delivery'; items: { product: Product; quantity: number }[]; total: number };
