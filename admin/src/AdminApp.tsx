@@ -1,50 +1,21 @@
-import { useEffect, useMemo, useState } from 'react';
-
-const API = 'http://127.0.0.1:4000/api';
-type User = { id: string; email: string; name: string; role: string; permissions: string[] };
-type Product = {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  size: string;
-  status: 'draft' | 'published' | 'archived';
-  availability: Availability;
-};
-type Availability = 'confirm_with_supplier' | 'in_stock' | 'unavailable';
-const availabilityLabels: Record<Availability, string> = {
-  confirm_with_supplier: 'Confirm with supplier',
-  in_stock: 'In stock',
-  unavailable: 'Unavailable',
-};
-type Order = {
-  id: string;
-  createdAt: string;
-  status: string;
-  name: string;
-  phone: string;
-  address: string;
-  pincode: string;
-  items: { name: string; quantity: number; unitPrice: number }[];
-  total: number;
-  paymentPreference: string;
-};
-type Fulfillment = { orderId: string; source: 'supplier' | 'own_stock'; supplierName: string; trackingNumber: string };
-type Page = 'overview' | 'products' | 'orders' | 'permissions';
-type PermissionMap = Record<string, string[]>;
-
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = sessionStorage.getItem('agricom-admin-token');
-  const headers: Record<string, string> = {
-    'content-type': 'application/json',
-    ...(options.headers as Record<string, string>),
-  };
-  if (token) headers.authorization = `Bearer ${token}`;
-  const response = await fetch(`${API}${path}`, { ...options, headers });
-  const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
-  return data as T;
-}
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { request } from './api';
+import { LoginPage } from './pages/LoginPage';
+import { OrdersPage } from './pages/OrdersPage';
+import { OverviewPage } from './pages/OverviewPage';
+import { PermissionsPage } from './pages/PermissionsPage';
+import { ProductsPage } from './pages/ProductsPage';
+import type {
+  Availability,
+  BatchResult,
+  Fulfillment,
+  Order,
+  Page,
+  PermissionMap,
+  Product,
+  ProductForm,
+  User,
+} from './types';
 
 const pageNames: Record<Page, string> = {
   overview: 'Overview',
@@ -67,7 +38,7 @@ export default function AdminApp() {
   const [batchStatus, setBatchStatus] = useState('checking_availability');
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<ProductForm>({
     name: '',
     category: 'Plant nutrition',
     price: '',
@@ -78,7 +49,7 @@ export default function AdminApp() {
     fulfillmentSource: 'supplier',
   });
 
-  async function refresh() {
+  const refresh = useCallback(async () => {
     try {
       const tasks: Promise<unknown>[] = [];
       if (user?.permissions.includes('catalog.read'))
@@ -119,7 +90,7 @@ export default function AdminApp() {
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not refresh admin data.');
     }
-  }
+  }, [user]);
 
   useEffect(() => {
     const token = sessionStorage.getItem('agricom-admin-token');
@@ -137,7 +108,7 @@ export default function AdminApp() {
   }, []);
   useEffect(() => {
     if (user) void refresh();
-  }, [user]);
+  }, [user, refresh]);
 
   async function signIn(event: React.FormEvent) {
     event.preventDefault();
@@ -260,13 +231,15 @@ export default function AdminApp() {
     if (!selected.length) return;
     setSaving(true);
     try {
-      await request('/admin/orders/batch', {
+      const result = await request<BatchResult>('/admin/orders/batch', {
         method: 'PATCH',
         body: JSON.stringify({ ids: selected, status: batchStatus }),
       });
       setSelected([]);
-      setMessage(`${selected.length} order request(s) updated.`);
       await refresh();
+      // refresh() clears the message, so report the batch result after it.
+      const skipped = result.skipped.map((item) => item.reason).join(' ');
+      setMessage(`${result.updated} order request(s) updated.${skipped ? ` Skipped: ${skipped}` : ''}`);
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Batch update failed.');
     } finally {
@@ -303,63 +276,7 @@ export default function AdminApp() {
   const can = (permission: string) => Boolean(user?.permissions.includes(permission));
   const newRequests = useMemo(() => orders.filter((order) => order.status === 'new_request').length, [orders]);
   if (!authReady) return <div className="auth-loading">Checking local session…</div>;
-  if (!user)
-    return (
-      <main className="admin-login-page">
-        <section className="admin-login-art">
-          <span className="admin-brand">AgriCom</span>
-          <p className="eyebrow">OWNER WORKSPACE</p>
-          <h1>
-            Good decisions
-            <br />
-            start with a clear view.
-          </h1>
-          <p>Manage product drafts, order requests and fulfilment from one place.</p>
-          <div className="login-leaf">✳</div>
-        </section>
-        <section className="admin-login-panel">
-          <div className="login-card">
-            <p className="eyebrow">LOCAL TEST ADMIN</p>
-            <h2>Sign in</h2>
-            <p>Use a demo account to preview role permissions and admin workflows.</p>
-            <form onSubmit={signIn} className="product-form">
-              <label>
-                Email
-                <input
-                  type="email"
-                  autoComplete="username"
-                  required
-                  value={login.email}
-                  onChange={(e) => setLogin({ ...login, email: e.target.value })}
-                />
-              </label>
-              <label>
-                Password
-                <input
-                  type="password"
-                  autoComplete="current-password"
-                  required
-                  value={login.password}
-                  onChange={(e) => setLogin({ ...login, password: e.target.value })}
-                />
-              </label>
-              {loginError && (
-                <p className="admin-message error-message" role="alert">
-                  {loginError}
-                </p>
-              )}
-              <button className="primary-button">Sign in to admin</button>
-            </form>
-            <div className="demo-credentials">
-              <b>Demo owner credentials</b>
-              <span>admin@agricom.local</span>
-              <code>AgriComAdmin2026!</code>
-              <small>Local testing only. Do not deploy this login or password.</small>
-            </div>
-          </div>
-        </section>
-      </main>
-    );
+  if (!user) return <LoginPage login={login} setLogin={setLogin} loginError={loginError} signIn={signIn} />;
 
   const showPage = (selectedPage: Page) => {
     if (selectedPage === 'products' && !can('catalog.read')) return;
@@ -435,386 +352,50 @@ export default function AdminApp() {
           </p>
         )}
         {page === 'overview' && (
-          <section className="dashboard-content">
-            <p className="welcome-copy">
-              Welcome back, {user.name.split(' ')[0]}. Here’s the current local test activity.
-            </p>
-            <div className="stat-grid">
-              <article className="stat-card">
-                <span>Published products</span>
-                <b>{products.filter((item) => item.status === 'published').length}</b>
-                <small>Visible in the storefront catalog</small>
-              </article>
-              <article className="stat-card">
-                <span>Draft products</span>
-                <b>{products.filter((item) => item.status === 'draft').length}</b>
-                <small>Waiting for review</small>
-              </article>
-              <article className="stat-card">
-                <span>New requests</span>
-                <b>{newRequests}</b>
-                <small>Need availability checks</small>
-              </article>
-              <article className="stat-card">
-                <span>All order requests</span>
-                <b>{orders.length}</b>
-                <small>Saved by the local Orders service</small>
-              </article>
-            </div>
-            <div className="admin-card overview-card">
-              <div>
-                <p className="eyebrow">NEXT STEP</p>
-                <h2>Review stock before confirming</h2>
-                <p>
-                  Check supplier availability and delivery for the customer’s PIN, then move the request through its
-                  status steps.
-                </p>
-              </div>
-              <button className="primary-button" onClick={() => showPage('orders')}>
-                Open order requests
-              </button>
-            </div>
-          </section>
+          <OverviewPage
+            user={user}
+            products={products}
+            orders={orders}
+            newRequests={newRequests}
+            openOrders={() => showPage('orders')}
+          />
         )}
         {page === 'products' && (
-          <div className="admin-grid">
-            <section className="admin-card">
-              <div className="card-heading">
-                <div>
-                  <p className="eyebrow">CATALOG SERVICE</p>
-                  <h2>Add a product</h2>
-                </div>
-              </div>
-              <form className="product-form" onSubmit={addProduct}>
-                <label>
-                  Product name
-                  <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </label>
-                <div className="two-col">
-                  <label>
-                    Category
-                    <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                      <option>Plant nutrition</option>
-                      <option>Pest management</option>
-                      <option>Disease management</option>
-                      <option>Soil health</option>
-                    </select>
-                  </label>
-                  <label>
-                    Price (₹)
-                    <input
-                      required
-                      min="1"
-                      type="number"
-                      value={form.price}
-                      onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    />
-                  </label>
-                </div>
-                <div className="two-col">
-                  <label>
-                    Pack size
-                    <input
-                      required
-                      placeholder="e.g. 500 ml"
-                      value={form.size}
-                      onChange={(e) => setForm({ ...form, size: e.target.value })}
-                    />
-                  </label>
-                  <label>
-                    Brand
-                    <input value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} />
-                  </label>
-                </div>
-                <label>
-                  Crops, separated by commas
-                  <input value={form.crop} onChange={(e) => setForm({ ...form, crop: e.target.value })} />
-                </label>
-                <label>
-                  Default fulfilment
-                  <select
-                    value={form.fulfillmentSource}
-                    onChange={(e) => setForm({ ...form, fulfillmentSource: e.target.value })}
-                  >
-                    <option value="supplier">Supplier ships</option>
-                    <option value="own_stock">AgriCom stock</option>
-                  </select>
-                </label>
-                <label>
-                  Product description
-                  <textarea
-                    rows={3}
-                    value={form.description}
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
-                  />
-                </label>
-                <button className="primary-button" disabled={saving}>
-                  {saving ? 'Saving…' : 'Save as draft'}
-                </button>
-              </form>
-            </section>
-            <section className="admin-card">
-              <div className="card-heading">
-                <div>
-                  <p className="eyebrow">CATALOG</p>
-                  <h2>Review before publishing</h2>
-                </div>
-                <button className="quiet-button" onClick={() => void refresh()}>
-                  Refresh
-                </button>
-              </div>
-              <div className="list">
-                {products.map((product) => (
-                  <article className="list-row product-row" key={product.id}>
-                    <div>
-                      <b>{product.name}</b>
-                      <small>
-                        {product.category} · {product.size} · ₹{product.price}
-                      </small>
-                    </div>
-                    {can('catalog.write') && (
-                      <select
-                        className="availability-select"
-                        value={product.availability}
-                        onChange={(e) => void setProductAvailability(product, e.target.value as Availability)}
-                        aria-label={`Availability of ${product.name}`}
-                      >
-                        {Object.entries(availabilityLabels).map(([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                    <span className={`status status-${product.status}`}>{product.status}</span>
-                    {product.status === 'draft' && (
-                      <button className="small-button" onClick={() => void setProductStatus(product, 'published')}>
-                        Publish
-                      </button>
-                    )}
-                    {product.status === 'published' && (
-                      <button className="small-button" onClick={() => void setProductStatus(product, 'draft')}>
-                        Unpublish
-                      </button>
-                    )}
-                  </article>
-                ))}
-              </div>
-            </section>
-          </div>
+          <ProductsPage
+            products={products}
+            form={form}
+            setForm={setForm}
+            saving={saving}
+            can={can}
+            addProduct={addProduct}
+            refresh={refresh}
+            setProductStatus={setProductStatus}
+            setProductAvailability={setProductAvailability}
+          />
         )}
         {page === 'orders' && (
-          <section className="admin-card orders-card">
-            <div className="card-heading">
-              <div>
-                <p className="eyebrow">ORDERS SERVICE</p>
-                <h2>Incoming requests</h2>
-                <p className="section-subcopy">
-                  Review each request, check stock and delivery, then update its progress.
-                </p>
-              </div>
-              <button className="quiet-button" onClick={() => void refresh()}>
-                Refresh
-              </button>
-            </div>
-            {can('orders.update') && (
-              <div className="batch-bar">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={orders.length > 0 && selected.length === orders.length}
-                    onChange={(e) => setSelected(e.target.checked ? orders.map((order) => order.id) : [])}
-                  />{' '}
-                  Select all
-                </label>
-                <span>{selected.length} selected</span>
-                <select value={batchStatus} onChange={(e) => setBatchStatus(e.target.value)}>
-                  {[
-                    'checking_availability',
-                    'confirmed',
-                    'awaiting_payment',
-                    'ready_to_dispatch',
-                    'dispatched',
-                    'delivered',
-                    'cancelled',
-                  ].map((status) => (
-                    <option key={status} value={status}>
-                      {status.replaceAll('_', ' ')}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  className="small-button"
-                  disabled={!selected.length || saving}
-                  onClick={() => void processBatch()}
-                >
-                  {saving ? 'Processing…' : 'Apply to selected'}
-                </button>
-              </div>
-            )}
-            {orders.length ? (
-              <div className="list">
-                {orders.map((order) => (
-                  <article className="order-row" key={order.id}>
-                    <div className="order-top">
-                      {can('orders.update') && (
-                        <input
-                          type="checkbox"
-                          checked={selected.includes(order.id)}
-                          onChange={(e) =>
-                            setSelected(
-                              e.target.checked ? [...selected, order.id] : selected.filter((id) => id !== order.id),
-                            )
-                          }
-                          aria-label={`Select ${order.id}`}
-                        />
-                      )}
-                      <div>
-                        <b>{order.id}</b>
-                        <small>
-                          {order.name} · {order.phone} · PIN {order.pincode}
-                        </small>
-                      </div>
-                      <b>₹{order.total.toLocaleString('en-IN')}</b>
-                    </div>
-                    <p>{order.items.map((item) => `${item.name} × ${item.quantity}`).join(' · ')}</p>
-                    <div className="order-actions">
-                      <span className="status">{order.status.replaceAll('_', ' ')}</span>
-                      {can('orders.update') && (
-                        <select
-                          value={order.status}
-                          onChange={(e) => void setOrderStatus(order, e.target.value)}
-                          aria-label={`Update ${order.id} status`}
-                        >
-                          {[
-                            'new_request',
-                            'checking_availability',
-                            'confirmed',
-                            'awaiting_payment',
-                            'ready_to_dispatch',
-                            'dispatched',
-                            'delivered',
-                            'cancelled',
-                          ].map((status) => (
-                            <option key={status} value={status}>
-                              {status.replaceAll('_', ' ')}
-                            </option>
-                          ))}
-                        </select>
-                      )}
-                      {can('fulfillment.manage') && (
-                        <select
-                          value={fulfillment[order.id]?.source || ''}
-                          onChange={(e) =>
-                            void setOrderFulfillment(order, { source: e.target.value as Fulfillment['source'] })
-                          }
-                          aria-label={`Set fulfilment source for ${order.id}`}
-                        >
-                          <option value="" disabled>
-                            Choose fulfilment
-                          </option>
-                          <option value="supplier">Supplier direct</option>
-                          <option value="own_stock">AgriCom stock</option>
-                        </select>
-                      )}
-                    </div>
-                    {can('fulfillment.manage') && fulfillment[order.id] && (
-                      <div className="fulfillment-details">
-                        {fulfillment[order.id].source === 'supplier' && (
-                          <input
-                            key={`${order.id}-supplier-${fulfillment[order.id].supplierName}`}
-                            defaultValue={fulfillment[order.id].supplierName}
-                            placeholder="Supplier name"
-                            aria-label={`Supplier for ${order.id}`}
-                            onBlur={(e) => {
-                              const value = e.target.value.trim();
-                              if (value !== fulfillment[order.id]?.supplierName)
-                                void setOrderFulfillment(order, { supplierName: value });
-                            }}
-                          />
-                        )}
-                        <input
-                          key={`${order.id}-tracking-${fulfillment[order.id].trackingNumber}`}
-                          defaultValue={fulfillment[order.id].trackingNumber}
-                          placeholder="Tracking number"
-                          aria-label={`Tracking number for ${order.id}`}
-                          onBlur={(e) => {
-                            const value = e.target.value.trim();
-                            if (value !== fulfillment[order.id]?.trackingNumber)
-                              void setOrderFulfillment(order, { trackingNumber: value });
-                          }}
-                        />
-                      </div>
-                    )}
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <p className="empty-note">No order requests yet. New requests appear here after checkout.</p>
-            )}
-          </section>
+          <OrdersPage
+            orders={orders}
+            fulfillment={fulfillment}
+            selected={selected}
+            setSelected={setSelected}
+            batchStatus={batchStatus}
+            setBatchStatus={setBatchStatus}
+            saving={saving}
+            can={can}
+            refresh={refresh}
+            processBatch={processBatch}
+            setOrderStatus={setOrderStatus}
+            setOrderFulfillment={setOrderFulfillment}
+          />
         )}
         {page === 'permissions' && (
-          <section className="admin-card permissions-card">
-            <div className="card-heading">
-              <div>
-                <p className="eyebrow">ACCESS CONTROL</p>
-                <h2>Role permissions</h2>
-                <p className="section-subcopy">Choose what staff roles can do. The owner keeps full control.</p>
-              </div>
-              <button className="primary-button" disabled={saving} onClick={() => void savePermissions()}>
-                {saving ? 'Saving…' : 'Save permissions'}
-              </button>
-            </div>
-            <div className="permission-matrix">
-              <div className="permission-head">
-                <span>Role</span>
-                <span>View catalog</span>
-                <span>Edit catalog</span>
-                <span>View requests</span>
-                <span>Update requests</span>
-                <span>Manage fulfilment</span>
-              </div>
-              {(['operations', 'catalog_manager'] as const).map((role) => (
-                <div className="permission-row" key={role}>
-                  <b>{role === 'operations' ? 'Operations' : 'Catalog manager'}</b>
-                  {(
-                    ['catalog.read', 'catalog.write', 'orders.read', 'orders.update', 'fulfillment.manage'] as const
-                  ).map((permission) => (
-                    <label key={permission} aria-label={`${role} ${permission}`}>
-                      <input
-                        type="checkbox"
-                        checked={(permissions[role] || []).includes(permission)}
-                        onChange={() => togglePermission(role, permission)}
-                      />
-                    </label>
-                  ))}
-                </div>
-              ))}
-              <div className="permission-row locked">
-                <b>Owner</b>
-                {['catalog.read', 'catalog.write', 'orders.read', 'orders.update', 'fulfillment.manage'].map(
-                  (permission) => (
-                    <label key={permission}>
-                      <input type="checkbox" checked disabled aria-label={`Owner always has ${permission}`} />
-                    </label>
-                  ),
-                )}
-              </div>
-              <div className="permission-row locked">
-                <b>Customer</b>
-                <span>Own order requests only</span>
-                <span>—</span>
-                <span>Own orders only</span>
-                <span>—</span>
-                <span>—</span>
-              </div>
-            </div>
-            <p className="permission-note">
-              These demo roles are local test accounts. For a live admin, add real identity verification, audit history
-              and secure account recovery.
-            </p>
-          </section>
+          <PermissionsPage
+            permissions={permissions}
+            saving={saving}
+            savePermissions={savePermissions}
+            togglePermission={togglePermission}
+          />
         )}
       </section>
     </div>

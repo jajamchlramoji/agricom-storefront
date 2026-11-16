@@ -1,22 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import {
-  AccountPage,
-  AboutPage,
-  BottomNav,
-  CartPage,
-  CheckoutPage,
-  ContactPage,
-  FaqPage,
-  Footer,
-  Header,
-  HomePage,
-  LoginPage,
-  ProductPage,
-  ShippingPage,
-  ShopPage,
-  WhatsAppFab,
-} from './components/Storefront';
+import { BottomNav } from './components/BottomNav';
+import { Footer } from './components/Footer';
+import { Header } from './components/Header';
+import { WhatsAppFab } from './components/WhatsAppFab';
+import { AccountPage } from './pages/AccountPage';
+import { CartPage } from './pages/CartPage';
+import { CheckoutPage } from './pages/CheckoutPage';
+import { HomePage } from './pages/HomePage';
+import { AboutPage, ContactPage, FaqPage, ShippingPage } from './pages/InfoPages';
+import { LoginPage } from './pages/LoginPage';
+import { ProductPage } from './pages/ProductPage';
+import { ShopPage } from './pages/ShopPage';
 import { storeConfig } from './config/store';
 import type { Language } from './i18n';
 import { useCatalog } from './store/catalog';
