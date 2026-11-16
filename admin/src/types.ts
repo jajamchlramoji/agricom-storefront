@@ -46,4 +46,6 @@ export type ProductForm = {
   description: string;
   fulfillmentSource: string;
 };
+/** An availability change to a published product, waiting for staff to confirm it. */
+export type PendingChange = { product: Product; availability: Availability };
 export type BatchResult = { updated: number; skipped: { id: string; reason: string }[] };

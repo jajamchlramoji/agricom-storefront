@@ -43,7 +43,8 @@ export function cleanProduct(input, categoryIds) {
   if (!input || typeof input !== 'object' || Array.isArray(input))
     return { error: 'Send the product fields as a JSON object.' };
   const check = { ...fields, category: oneOf(categoryIds) };
-  const unknown = Object.keys(input).filter((key) => !(key in check));
+  // Object.hasOwn, not `in`: names like __proto__ and constructor exist on every object.
+  const unknown = Object.keys(input).filter((key) => !Object.hasOwn(check, key));
   if (unknown.length) return { error: `These fields cannot be set: ${unknown.join(', ')}.` };
   const values = {};
   for (const [key, value] of Object.entries(input)) {

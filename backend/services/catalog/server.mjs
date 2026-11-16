@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { actorOf, bodyOf, send } from '../../lib/http.mjs';
+import { HttpError, actorOf, bodyOf, send } from '../../lib/http.mjs';
 import { dataDir, load, locked, save, seedDir } from '../../lib/json-store.mjs';
 import { cleanProduct } from './validate.mjs';
 
@@ -96,6 +96,7 @@ createServer(async (req, res) => {
     return await (req.method === 'GET' ? handle(req, res) : locked(file, () => handle(req, res)));
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
+    if (error instanceof HttpError) return send(res, error.status, { error: error.message });
     console.error('[catalog]', error);
     return send(res, 500, { error: 'Catalog service error.' });
   }

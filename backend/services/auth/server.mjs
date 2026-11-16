@@ -1,7 +1,7 @@
 import { createServer } from 'node:http';
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual } from 'node:crypto';
 import { promisify } from 'node:util';
-import { bodyOf, send } from '../../lib/http.mjs';
+import { HttpError, bodyOf, send } from '../../lib/http.mjs';
 
 const scrypt = promisify(scryptCallback);
 const port = Number(process.env.AUTH_PORT || 4104);
@@ -84,6 +84,8 @@ createServer(async (req, res) => {
       if (!timingSafeEqual(Buffer.from(supplied), record.hash))
         return send(res, 401, { error: 'Email or password is incorrect.' });
       const token = randomBytes(32).toString('base64url');
+      // Drop expired sessions so the list cannot grow without limit.
+      for (const [key, session] of sessions) if (session.expiresAt < Date.now()) sessions.delete(key);
       sessions.set(token, { userId: user.id, expiresAt: Date.now() + 8 * 60 * 60 * 1000 });
       return send(res, 200, { token, user: safeUser(user) });
     }
@@ -125,6 +127,7 @@ createServer(async (req, res) => {
     return send(res, 404, { error: 'Auth route not found.' });
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
+    if (error instanceof HttpError) return send(res, error.status, { error: error.message });
     console.error('[auth]', error);
     return send(res, 500, { error: 'Authentication service error.' });
   }

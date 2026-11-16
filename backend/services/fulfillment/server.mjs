@@ -1,6 +1,6 @@
 import { createServer } from 'node:http';
 import path from 'node:path';
-import { actorOf, bodyOf, send } from '../../lib/http.mjs';
+import { HttpError, actorOf, bodyOf, send, textOf } from '../../lib/http.mjs';
 import { dataDir, load as loadJson, locked, save as saveJson } from '../../lib/json-store.mjs';
 
 const file = path.join(dataDir, 'fulfillment.json');
@@ -27,13 +27,17 @@ createServer(async (req, res) => {
       const input = await bodyOf(req);
       if (!['supplier', 'own_stock'].includes(input.source))
         return send(res, 400, { error: 'Choose supplier or AgriCom stock.' });
+      const supplierName = textOf(input.supplierName, 120);
+      const trackingNumber = textOf(input.trackingNumber, 120);
+      if (supplierName === null || trackingNumber === null)
+        return send(res, 400, { error: 'Supplier name and tracking number must be text of up to 120 characters.' });
       return await locked(file, async () => {
         const records = await load();
         records[decodeURIComponent(match[1])] = {
           orderId: decodeURIComponent(match[1]),
           source: input.source,
-          supplierName: input.supplierName?.trim() || '',
-          trackingNumber: input.trackingNumber?.trim() || '',
+          supplierName,
+          trackingNumber,
           updatedAt: new Date().toISOString(),
           updatedBy: actorOf(req)?.email || null,
         };
@@ -44,6 +48,7 @@ createServer(async (req, res) => {
     return send(res, 404, { error: 'Fulfillment route not found.' });
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
+    if (error instanceof HttpError) return send(res, error.status, { error: error.message });
     console.error('[fulfillment]', error);
     return send(res, 500, { error: 'Fulfillment service error.' });
   }

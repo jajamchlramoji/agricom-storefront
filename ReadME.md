@@ -63,6 +63,7 @@ The storefront build is written to `frontend/dist/`; the admin preview build is 
 
 ```sh
 npm test            # API tests for sign-in, permissions, catalog, orders and fulfilment
+                    # plus stress tests: hundreds of requests at once, racing changes, hostile input
 npm run lint        # ESLint
 npm run typecheck   # TypeScript, both apps
 npm run format      # Format the code with Prettier

@@ -5,16 +5,18 @@ import { OrdersPage } from './pages/OrdersPage';
 import { OverviewPage } from './pages/OverviewPage';
 import { PermissionsPage } from './pages/PermissionsPage';
 import { ProductsPage } from './pages/ProductsPage';
-import type {
-  Availability,
-  BatchResult,
-  Fulfillment,
-  Order,
-  Page,
-  PermissionMap,
-  Product,
-  ProductForm,
-  User,
+import {
+  availabilityLabels,
+  type Availability,
+  type BatchResult,
+  type Fulfillment,
+  type Order,
+  type Page,
+  type PendingChange,
+  type PermissionMap,
+  type Product,
+  type ProductForm,
+  type User,
 } from './types';
 
 const pageNames: Record<Page, string> = {
@@ -37,6 +39,7 @@ export default function AdminApp() {
   const [selected, setSelected] = useState<string[]>([]);
   const [batchStatus, setBatchStatus] = useState('checking_availability');
   const [message, setMessage] = useState('');
+  const [pendingChange, setPendingChange] = useState<PendingChange | null>(null);
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState<ProductForm>({
     name: '',
@@ -184,13 +187,26 @@ export default function AdminApp() {
       setMessage(error instanceof Error ? error.message : 'Could not update product.');
     }
   }
+  /** A change to a published product goes live at once, so staff confirm it first. */
+  function requestAvailability(product: Product, availability: Availability) {
+    if (availability === product.availability) return;
+    if (product.status === 'published') setPendingChange({ product, availability });
+    else void setProductAvailability(product, availability);
+  }
   async function setProductAvailability(product: Product, availability: Availability) {
+    const live = product.status === 'published';
+    setPendingChange(null);
     try {
       await request(`/catalog/admin/products/${encodeURIComponent(product.id)}`, {
         method: 'PATCH',
         body: JSON.stringify({ availability }),
       });
       await refresh();
+      setMessage(
+        live
+          ? `"${product.name}" is now "${availabilityLabels[availability]}" on the website.`
+          : `"${product.name}" saved as "${availabilityLabels[availability]}". It will show on the website once published.`,
+      );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not update product.');
     }
@@ -201,6 +217,8 @@ export default function AdminApp() {
         method: 'PATCH',
         body: JSON.stringify({ status }),
       });
+      // Keep the batch dropdown on the status just used, ready to apply to other selected requests.
+      setBatchStatus(status);
       await refresh();
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not update order.');
@@ -370,7 +388,10 @@ export default function AdminApp() {
             addProduct={addProduct}
             refresh={refresh}
             setProductStatus={setProductStatus}
-            setProductAvailability={setProductAvailability}
+            requestAvailability={requestAvailability}
+            pendingChange={pendingChange}
+            confirmChange={(change) => void setProductAvailability(change.product, change.availability)}
+            cancelChange={() => setPendingChange(null)}
           />
         )}
         {page === 'orders' && (

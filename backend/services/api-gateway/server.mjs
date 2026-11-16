@@ -1,4 +1,5 @@
 import { createServer } from 'node:http';
+import { maxBodyBytes } from '../../lib/http.mjs';
 
 const port = Number(process.env.API_PORT || 4000);
 const allowedOrigins = new Set([
@@ -96,7 +97,17 @@ createServer(async (req, res) => {
   const upstream = `${route.target}${targetPath}${new URL(req.url || '/', 'http://127.0.0.1').search}`;
   try {
     const chunks = [];
-    if (!['GET', 'HEAD'].includes(req.method || '')) for await (const chunk of req) chunks.push(chunk);
+    let size = 0;
+    if (!['GET', 'HEAD'].includes(req.method || ''))
+      // Keep reading past the limit, without storing, so the client gets an answer instead of a broken connection.
+      for await (const chunk of req) {
+        size += chunk.length;
+        if (size <= maxBodyBytes) chunks.push(chunk);
+      }
+    if (size > maxBodyBytes) {
+      res.writeHead(413, { 'content-type': 'application/json' });
+      return res.end(JSON.stringify({ error: 'Request body is too large.' }));
+    }
     const headers = { 'content-type': req.headers['content-type'] || 'application/json' };
     if (authorization) headers.authorization = authorization;
     if (user) {

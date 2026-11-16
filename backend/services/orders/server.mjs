@@ -1,13 +1,16 @@
 import { createServer } from 'node:http';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { actorOf, bodyOf, send } from '../../lib/http.mjs';
+import { HttpError, actorOf, bodyOf, send, textOf } from '../../lib/http.mjs';
 import { dataDir, load as loadJson, locked, save as saveJson } from '../../lib/json-store.mjs';
 import { moveOrder, nextStatuses, statuses } from './status.mjs';
 
 const file = path.join(dataDir, 'orders.json');
 const catalogUrl = process.env.CATALOG_SERVICE_URL || 'http://127.0.0.1:4101';
 const port = Number(process.env.ORDERS_PORT || 4102);
+/** Most of one product per order, and most different products per order. */
+const maxQuantity = 99;
+const maxLines = 50;
 const load = () => loadJson(file, []);
 const save = (orders) => saveJson(file, orders);
 
@@ -37,13 +40,18 @@ async function handle(req, res) {
   const actor = actorOf(req);
   if (req.method === 'POST' && url.pathname === '/orders') {
     const input = await bodyOf(req);
+    const name = textOf(input.name, 120);
+    const address = textOf(input.address, 500);
     if (
-      !input.name?.trim() ||
-      !/^[6-9]\d{9}$/.test(input.phone || '') ||
-      !input.address?.trim() ||
-      !/^\d{6}$/.test(input.pincode || '') ||
+      !name ||
+      !address ||
+      typeof input.phone !== 'string' ||
+      !/^[6-9]\d{9}$/.test(input.phone) ||
+      typeof input.pincode !== 'string' ||
+      !/^\d{6}$/.test(input.pincode) ||
       !Array.isArray(input.items) ||
-      !input.items.length
+      !input.items.length ||
+      input.items.length > maxLines
     ) {
       return send(res, 400, {
         error: 'Enter your name, valid mobile number, delivery address, PIN and at least one item.',
@@ -52,10 +60,16 @@ async function handle(req, res) {
     const products = await publishedProducts();
     if (!products)
       return send(res, 503, { error: 'The product catalog is not available right now. Please try again shortly.' });
-    const items = input.items.map((line) => {
-      const product = products.find((candidate) => candidate.id === line.productId);
-      const quantity = Math.floor(Number(line.quantity));
-      if (!product || product.availability === 'unavailable' || quantity < 1 || quantity > 99) return null;
+    // Add up repeated lines for the same product, so the per-product limit cannot be sidestepped.
+    const quantities = new Map();
+    for (const line of input.items) {
+      const valid = line && typeof line.productId === 'string' && Number.isInteger(line.quantity) && line.quantity >= 1;
+      if (!valid) return send(res, 400, { error: 'Each item needs a product and a whole-number quantity.' });
+      quantities.set(line.productId, (quantities.get(line.productId) || 0) + line.quantity);
+    }
+    const items = [...quantities].map(([productId, quantity]) => {
+      const product = products.find((candidate) => candidate.id === productId);
+      if (!product || product.availability === 'unavailable' || quantity > maxQuantity) return null;
       return {
         productId: product.id,
         name: product.name,
@@ -70,13 +84,18 @@ async function handle(req, res) {
     const subtotal = items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
     const total = subtotal + (subtotal > 0 && subtotal < 1500 ? 90 : 0);
     const createdAt = new Date().toISOString();
+    const orders = await load();
+    const taken = new Set(orders.map((item) => item.id));
+    let id;
+    do id = `AG-${createdAt.slice(0, 10).replaceAll('-', '')}-${randomUUID().slice(0, 6).toUpperCase()}`;
+    while (taken.has(id));
     const order = {
-      id: `AG-${createdAt.slice(0, 10).replaceAll('-', '')}-${randomUUID().slice(0, 6).toUpperCase()}`,
+      id,
       createdAt,
       status: 'new_request',
-      name: input.name.trim(),
+      name,
       phone: input.phone,
-      address: input.address.trim(),
+      address,
       pincode: input.pincode,
       paymentPreference: input.paymentPreference === 'Cash on delivery' ? 'Cash on delivery' : 'UPI',
       items,
@@ -85,7 +104,6 @@ async function handle(req, res) {
       customerId: actor?.id || null,
       history: [{ at: createdAt, from: null, to: 'new_request', by: actor }],
     };
-    const orders = await load();
     orders.unshift(order);
     await save(orders);
     return send(res, 201, { order });
@@ -107,6 +125,7 @@ async function handle(req, res) {
     if (
       !Array.isArray(input.ids) ||
       input.ids.length === 0 ||
+      !input.ids.every((id) => typeof id === 'string') ||
       input.ids.length > 100 ||
       !statuses.includes(input.status)
     )
@@ -138,6 +157,7 @@ createServer(async (req, res) => {
     return await (req.method === 'GET' ? handle(req, res) : locked(file, () => handle(req, res)));
   } catch (error) {
     if (error instanceof SyntaxError) return send(res, 400, { error: 'Request body must be valid JSON.' });
+    if (error instanceof HttpError) return send(res, error.status, { error: error.message });
     console.error('[orders]', error);
     return send(res, 500, { error: 'Orders service error.' });
   }

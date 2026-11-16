@@ -993,3 +993,35 @@ body {
     max-width: none;
   }
 }
+.confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #0f2a2066;
+}
+.confirm-dialog {
+  width: min(440px, 100%);
+  background: #fffdf7;
+  border: 1px solid #e8e3d6;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 24px 60px #18382e33;
+}
+.confirm-dialog h2 {
+  margin: 4px 0 10px;
+}
+.confirm-dialog p {
+  margin: 0;
+  color: #4d5f55;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}

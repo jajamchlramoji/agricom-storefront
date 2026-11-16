@@ -85,5 +85,5 @@ export async function startStack() {
     for (const child of children) child.kill('SIGTERM');
     await rm(dataDir, { recursive: true, force: true });
   }
-  return { api, login, stop, dataDir };
+  return { api, login, stop, dataDir, base };
 }

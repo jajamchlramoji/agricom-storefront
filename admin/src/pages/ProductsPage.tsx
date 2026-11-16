@@ -1,4 +1,4 @@
-import { availabilityLabels, type Availability, type Product, type ProductForm } from '../types';
+import { availabilityLabels, type Availability, type PendingChange, type Product, type ProductForm } from '../types';
 
 type Props = {
   products: Product[];
@@ -9,7 +9,10 @@ type Props = {
   addProduct: (event: React.FormEvent) => void;
   refresh: () => Promise<void>;
   setProductStatus: (product: Product, status: Product['status']) => Promise<void>;
-  setProductAvailability: (product: Product, availability: Availability) => Promise<void>;
+  requestAvailability: (product: Product, availability: Availability) => void;
+  pendingChange: PendingChange | null;
+  confirmChange: (change: PendingChange) => void;
+  cancelChange: () => void;
 };
 
 export function ProductsPage({
@@ -21,7 +24,10 @@ export function ProductsPage({
   addProduct,
   refresh,
   setProductStatus,
-  setProductAvailability,
+  requestAvailability,
+  pendingChange,
+  confirmChange,
+  cancelChange,
 }: Props) {
   return (
     <div className="admin-grid">
@@ -123,7 +129,7 @@ export function ProductsPage({
                 <select
                   className="availability-select"
                   value={product.availability}
-                  onChange={(e) => void setProductAvailability(product, e.target.value as Availability)}
+                  onChange={(e) => requestAvailability(product, e.target.value as Availability)}
                   aria-label={`Availability of ${product.name}`}
                 >
                   {Object.entries(availabilityLabels).map(([value, label]) => (
@@ -148,6 +154,33 @@ export function ProductsPage({
           ))}
         </div>
       </section>
+      {pendingChange && (
+        <div className="confirm-backdrop" role="presentation" onClick={cancelChange}>
+          <div
+            className="confirm-dialog"
+            role="alertdialog"
+            aria-modal="true"
+            aria-labelledby="confirm-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <p className="eyebrow">PUBLISHED PRODUCT</p>
+            <h2 id="confirm-title">Publish this change to the website?</h2>
+            <p>
+              <b>{pendingChange.product.name}</b> is live on the website. Changing it from{' '}
+              <b>{availabilityLabels[pendingChange.product.availability]}</b> to{' '}
+              <b>{availabilityLabels[pendingChange.availability]}</b> will show to customers straight away.
+            </p>
+            <div className="confirm-actions">
+              <button className="quiet-button" onClick={cancelChange}>
+                Cancel
+              </button>
+              <button className="primary-button" autoFocus onClick={() => confirmChange(pendingChange)}>
+                Publish change
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
