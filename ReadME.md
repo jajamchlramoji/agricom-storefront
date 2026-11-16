@@ -59,6 +59,17 @@ npm run build
 
 The storefront build is written to `frontend/dist/`; the admin preview build is written to `admin/dist/`. The backend services run on Node.js and are not included in either static build.
 
+## Checks
+
+```sh
+npm test            # API tests for sign-in, permissions, catalog, orders and fulfilment
+npm run lint        # ESLint
+npm run typecheck   # TypeScript, both apps
+npm run format      # Format the code with Prettier
+```
+
+The tests start their own copy of the backend on free ports with a temporary data folder, so they never touch your local catalog or orders. GitHub runs the same checks on every push and pull request.
+
 ## Architecture
 
 ```text
@@ -80,7 +91,9 @@ AgriCom/
 │   ├── vite.config.ts                # Frontend development/build settings
 │   └── src/
 │       ├── App.tsx                   # Storefront routes, shell and SEO metadata
-│       ├── components/Storefront.tsx # Current storefront page and UI components
+│       ├── pages/                    # One file per page: Home, Shop, Product, Cart, Checkout, Account, Login, Info
+│       ├── components/               # Shared UI: Header, Footer, BottomNav, ProductCard, WhatsAppFab
+│       ├── lib/format.ts             # Currency formatting
 │       ├── data/products.ts          # Product and order TypeScript shapes + demo fallback
 │       ├── services/api.ts           # HTTP client for the API gateway
 │       ├── store/catalog.ts          # Loads published products from Catalog service
@@ -91,9 +104,16 @@ AgriCom/
 ├── admin/                            # Separate local owner/admin frontend preview
 │   ├── index.html                    # Admin app entry document, excluded from search indexing
 │   ├── vite.config.ts                # Admin app dev/build settings
-│   └── src/AdminApp.tsx              # Sign-in, drafts, request queue, fulfilment and permissions
+│   └── src/
+│       ├── AdminApp.tsx              # Admin shell: sign-in state, data loading and actions
+│       ├── pages/                    # Login, Overview, Products, Orders and Permissions pages
+│       ├── api.ts                    # HTTP client for the API gateway
+│       └── types.ts                  # Admin data shapes
 ├── backend/
 │   ├── data/catalog.seed.json        # Committed demo catalog used for local startup
+│   ├── lib/                          # Shared HTTP helpers and safe JSON file storage
+│   ├── services.mjs                  # List of services, used by the dev script and tests
+│   ├── tests/                        # API tests; start the services on free ports with temporary data
 │   ├── services/api-gateway/         # Routes requests and checks demo role permissions
 │   ├── services/auth/                # Local demo login, sessions and role permissions
 │   ├── services/catalog/             # Product reads, draft creation and publishing
@@ -102,6 +122,7 @@ AgriCom/
 │   ├── services/payments/README.md   # Planned boundary; no payment collection yet
 │   └── services/notifications/README.md # Planned boundary; manual WhatsApp follow-up now
 ├── packages/contracts/               # HTTP API route and payload documentation
+├── .github/workflows/ci.yml          # Runs format check, lint, build and tests on every push and PR
 ├── scripts/dev.mjs                   # Starts all local applications and services
 ├── scripts/dev-backend.mjs           # Starts backend service processes
 ├── PROJECT_BRIEF.md                  # Product goals and launch assumptions
@@ -113,7 +134,7 @@ AgriCom/
 - **API Gateway:** one local API entry point for browser apps; forwards calls and checks the demo user’s role permissions.
 - **Auth:** local demo customer/admin login. Owner, Operations, Catalog manager, and Customer roles have different permissions.
 - **Catalog:** owns product data and draft/published status. Only published products are returned to the storefront.
-- **Orders:** validates customer details and product IDs, recalculates totals, saves order requests, and updates their status.
+- **Orders:** validates customer details and product IDs, recalculates totals, saves order requests, and updates their status. An order can only move along the allowed steps in `backend/services/orders/status.mjs`, and each change records who made it.
 - **Fulfillment:** records whether an order is assigned to a supplier or AgriCom stock. After a source is chosen, staff can add the supplier name and a tracking number on the request row.
 - **Batch orders:** the admin can select multiple requests and apply a status update together; individual requests still have their own status.
 - **Payments:** documented future boundary. Add only after choosing a provider and implementing server-side verification.
